@@ -1,4 +1,4 @@
-# MINI-SEIM-LOC
+# MINI-SEIM-SOC
 Mini SIEM en Python pour SOC Analyst : analyse de logs, détection de brute force, accès à des fichiers sensibles et commandes suspectes.
 from collections import defaultdict
 
