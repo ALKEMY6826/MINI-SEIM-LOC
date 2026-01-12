@@ -1,20 +1,29 @@
 # MINI-SEIM-LOC
 Mini SIEM en Python pour SOC Analyst : analyse de logs, détection de brute force, accès à des fichiers sensibles et commandes suspectes.
-# Mini SIEM SOC - Python
+from collections import defaultdict
 
-## Objectif
-Détecter des activités suspectes à partir de logs système.
+FAILED_LIMIT = 5
+failed_logins = defaultdict(int)
 
-## Détections implémentées
-- Brute force (échecs de connexion)
-- Exécution de commandes dangereuses
-- Accès à des fichiers sensibles
+alerts = []
 
-## Compétences démontrées
-- Analyse de logs
-- Détection SOC
-- Python (conditions, fichiers, dictionnaires)
-- Sécurité offensive & défensive
+with open("logs.txt", "r") as logs:
+    for line in logs:
+        if "LOGIN FAILED" in line:
+            user = line.split("user=")[1].split()[0]
+            failed_logins[user] += 1
 
-## Niveau
-SOC Analyst L1 / Security+
+            if failed_logins[user] >= FAILED_LIMIT:
+                alerts.append(f"[ALERT] Brute force détecté sur le compte {user}")
+
+        if "COMMAND EXECUTED" in line:
+            alerts.append("[ALERT] Commande système dangereuse détectée")
+
+        if "/etc/passwd" in line:
+            alerts.append("[ALERT] Accès à un fichier sensible détecté")
+
+with open("alerts.txt", "w") as alert_file:
+    for alert in alerts:
+        alert_file.write(alert + "\n")
+
+print("Analyse terminée. Alertes générées.")
